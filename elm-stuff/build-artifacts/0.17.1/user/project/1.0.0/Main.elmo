@@ -1,0 +1,148 @@
+var _user$project$Main$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _user$project$Main$init = {
+	ctor: '_Tuple2',
+	_0: {
+		builds: _elm_lang$core$Native_List.fromArray(
+			[]),
+		isLoading: false
+	},
+	_1: _elm_lang$core$Platform_Cmd$none
+};
+var _user$project$Main$Build = F5(
+	function (a, b, c, d, e) {
+		return {building: a, id: b, number: c, result: d, url: e};
+	});
+var _user$project$Main$decodeBuild = A6(
+	_elm_lang$core$Json_Decode$object5,
+	_user$project$Main$Build,
+	_elm_lang$core$Json_Decode$maybe(
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'building', _elm_lang$core$Json_Decode$bool)),
+	_elm_lang$core$Json_Decode$maybe(
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'id', _elm_lang$core$Json_Decode$string)),
+	A2(_elm_lang$core$Json_Decode_ops[':='], 'number', _elm_lang$core$Json_Decode$int),
+	_elm_lang$core$Json_Decode$maybe(
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'result', _elm_lang$core$Json_Decode$string)),
+	A2(_elm_lang$core$Json_Decode_ops[':='], 'url', _elm_lang$core$Json_Decode$string));
+var _user$project$Main$decodeBuilds = A2(
+	_elm_lang$core$Json_Decode$at,
+	_elm_lang$core$Native_List.fromArray(
+		['builds']),
+	_elm_lang$core$Json_Decode$list(_user$project$Main$decodeBuild));
+var _user$project$Main$Model = F2(
+	function (a, b) {
+		return {builds: a, isLoading: b};
+	});
+var _user$project$Main$FetchFail = function (a) {
+	return {ctor: 'FetchFail', _0: a};
+};
+var _user$project$Main$UpdateBuilds = function (a) {
+	return {ctor: 'UpdateBuilds', _0: a};
+};
+var _user$project$Main$fetchBuilds = function () {
+	var url = 'http://jcpintegration.nce.amadeus.net/job/ddslh/job/lufthansa-nui-lh/job/releases/job/cash_and_miles/job/official/api/json';
+	return A3(
+		_elm_lang$core$Task$perform,
+		_user$project$Main$FetchFail,
+		_user$project$Main$UpdateBuilds,
+		A2(_evancz$elm_http$Http$get, _user$project$Main$decodeBuilds, url));
+}();
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'Refresh':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{isLoading: true}),
+					_1: _user$project$Main$fetchBuilds
+				};
+			case 'UpdateBuild':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'UpdateBuilds':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{builds: _p0._0, isLoading: false}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{isLoading: false}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
+var _user$project$Main$UpdateBuild = function (a) {
+	return {ctor: 'UpdateBuild', _0: a};
+};
+var _user$project$Main$fetchBuild = function (url) {
+	var api = A2(_elm_lang$core$Basics_ops['++'], url, 'api/json');
+	return A3(
+		_elm_lang$core$Task$perform,
+		_user$project$Main$FetchFail,
+		_user$project$Main$UpdateBuild,
+		A2(_evancz$elm_http$Http$get, _user$project$Main$decodeBuild, url));
+};
+var _user$project$Main$Refresh = {ctor: 'Refresh'};
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$h2,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Builds')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Main$Refresh)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Refresh!')
+					])),
+				A2(
+				_elm_lang$html$Html$br,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[])),
+				A2(
+				_elm_lang$html$Html$ul,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				A2(
+					_elm_lang$core$List$map,
+					function (build) {
+						return A2(
+							_elm_lang$html$Html$li,
+							_elm_lang$core$Native_List.fromArray(
+								[]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text(build.url)
+								]));
+					},
+					model.builds))
+			]));
+};
+var _user$project$Main$main = {
+	main: _elm_lang$html$Html_App$program(
+		{init: _user$project$Main$init, view: _user$project$Main$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})
+};
